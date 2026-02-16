@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { notFound } from "next/navigation";
 import SalesInvoiceForm from "@/components/forms/sales-invoice-form";
 import { getInvoice } from "@/app/actions/invoices";

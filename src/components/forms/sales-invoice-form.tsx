@@ -45,16 +45,16 @@ interface SalesInvoiceFormProps {
     initialData?: any;
     mode?: "create" | "edit";
     invoiceId?: string;
-    customers: { id: string; name: string }[];
-    items: { id: string; name: string; code?: string; sales_price?: number }[];
+    customers?: { id: string; name: string }[];
+    items?: { id: string; name: string; code?: string; sales_price?: number }[];
 }
 
 export default function SalesInvoiceForm({
     initialData,
     mode = "create",
     invoiceId,
-    customers,
-    items
+    customers = [],
+    items = []
 }: SalesInvoiceFormProps) {
     const router = useRouter();
     // const { toast } = useToast();

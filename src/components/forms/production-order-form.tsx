@@ -43,7 +43,7 @@ interface ProductionOrderFormProps {
     initialData?: any;
     mode?: "create" | "edit";
     orderId?: string;
-    inventoryItems: any[]; // Pass inventory items as prop
+    inventoryItems?: { id: string; name: string; code: string }[];
 }
 
 export default function ProductionOrderForm({

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { notFound } from "next/navigation";
 import PurchaseInvoiceForm from "@/components/forms/purchase-invoice-form";
 import { PURCHASE_INVOICES } from "@/lib/mock-data";

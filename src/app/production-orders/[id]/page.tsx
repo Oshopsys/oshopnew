@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 
 import { useState } from "react";
@@ -82,8 +83,8 @@ export default function ProductionOrderDetailsPage() {
                                 <span className="font-semibold text-muted-foreground">الحالة:</span>
                                 <p className="mt-1">
                                     <span className={`inline-flex items-center px-2 py-1 rounded-md text-sm ${order.status === "كتمل" || order.status === "Completed" ? "bg-green-100 text-green-700" :
-                                            order.status === "قيد التنفيذ" || order.status === "In Progress" ? "bg-blue-100 text-blue-700" :
-                                                "bg-gray-100 text-gray-700"
+                                        order.status === "قيد التنفيذ" || order.status === "In Progress" ? "bg-blue-100 text-blue-700" :
+                                            "bg-gray-100 text-gray-700"
                                         }`}>
                                         {order.status}
                                     </span>

@@ -32,7 +32,7 @@ const accountSchema = z.object({
     type: z.enum(["ASSET", "LIABILITY", "EQUITY", "REVENUE", "EXPENSE"]),
     parent_id: z.string().optional(),
     description: z.string().optional(),
-    is_group: z.boolean().default(false),
+    is_group: z.boolean().optional(),
 });
 
 type AccountFormValues = z.infer<typeof accountSchema>;

@@ -116,6 +116,29 @@ export interface Database {
                 }
                 Update: Partial<Database['public']['Tables']['invoices']['Insert']>
             }
+            invoice_lines: {
+                Row: {
+                    id: string
+                    invoice_id: string
+                    item_id: string | null
+                    description: string | null
+                    quantity: number
+                    unit_price: number
+                    total: number
+                    created_at: string
+                }
+                Insert: {
+                    id?: string
+                    invoice_id: string
+                    item_id?: string | null
+                    description?: string | null
+                    quantity: number
+                    unit_price: number
+                    total: number
+                    created_at?: string
+                }
+                Update: Partial<Database['public']['Tables']['invoice_lines']['Insert']>
+            }
             employees: {
                 Row: {
                     id: string

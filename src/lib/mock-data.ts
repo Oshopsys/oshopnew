@@ -77,7 +77,20 @@ export const CUSTOMERS = [
     { id: "3", name: "مؤسسة البناء الحديث", email: "contact@binaa.ly" },
 ];
 
-export const INVENTORY_ITEMS = [
+export interface InventoryItem {
+    id: string;
+    code: string;
+    name: string;
+    price: number;
+    unit?: string;
+    cost?: number;
+    description?: string;
+    incomeAccountId?: string;
+    expenseAccountId?: string;
+    quantity?: number;
+}
+
+export const INVENTORY_ITEMS: InventoryItem[] = [
     { id: "1", code: "ITEM-001", name: "خدمة شحن - طرابلس", price: 150.00 },
     { id: "2", code: "ITEM-002", name: "خدمة شحن - بنغازي", price: 200.00 },
     { id: "3", code: "ITEM-003", name: "تغليف خاص", price: 50.00 },
@@ -89,7 +102,18 @@ export const INVOICES = [
     { id: "INV-003", date: "2024-02-10", customer: "مؤسسة البناء الحديث", amount: 850.00, status: "متأخرة" },
 ];
 
-export const SUPPLIERS = [
+export interface Supplier {
+    id: string;
+    name: string;
+    email?: string;
+    code?: string;
+    address?: string; // Generic address or separate billing/shipping? Form uses address or billingAddress?
+    taxIdentificationNumber?: string;
+    creditLimit?: number;
+    currency?: string;
+}
+
+export const SUPPLIERS: Supplier[] = [
     { id: "1", name: "المورد الأول - الصين", email: "supplier1@china.com" },
     { id: "2", name: "شركة النقل السريع", email: "trans@logistic.ly" },
 ];
@@ -218,7 +242,19 @@ export const PRODUCTION_ORDERS = [
     { id: "PO-002", date: "2024-02-05", reference: "PO-1002", finishedItem: "كرسي جلد", quantity: 25, status: "قيد التنفيذ" },
 ];
 
-export const PAYSLIPS = [
+export interface Payslip {
+    id: string;
+    date: string;
+    employee: string;
+    earnings: number;
+    deductions: number;
+    netPay: number;
+    description?: string;
+    earningsDetails?: any[];
+    deductionsDetails?: any[];
+}
+
+export const PAYSLIPS: Payslip[] = [
     { id: "PS-001", date: "2024-01-31", employee: "محمد علي", earnings: 3500.00, deductions: 150.00, netPay: 3350.00 },
     { id: "PS-002", date: "2024-01-31", employee: "أحمد سالم", earnings: 2000.00, deductions: 100.00, netPay: 1900.00 },
 ];

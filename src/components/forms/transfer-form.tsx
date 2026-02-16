@@ -36,7 +36,7 @@ interface TransferFormProps {
     initialData?: any;
     mode?: "create" | "edit";
     transferId?: string;
-    bankAccounts: any[]; // Pass bank accounts as prop
+    bankAccounts?: { id: string; name: string; code: string }[];
 }
 
 export default function TransferForm({

@@ -92,6 +92,16 @@ export default function JournalEntryForm({
             return;
         }
 
+        const enrichedLines = data.lines.map(line => {
+            const account = ACCOUNTS.find((a: any) => a.id === line.accountId);
+            return {
+                ...line,
+                accountCode: account?.code || "",
+                accountName: account?.name || "",
+                description: line.description || ""
+            };
+        });
+
         if (mode === "edit" && entryId) {
             // TODO: Replace with API call
             const index = JOURNAL_ENTRIES.findIndex((e: any) => e.id === entryId);
@@ -99,6 +109,7 @@ export default function JournalEntryForm({
                 JOURNAL_ENTRIES[index] = {
                     ...JOURNAL_ENTRIES[index],
                     ...data,
+                    lines: enrichedLines,
                     description: data.narrative // Map back narrative to description
                 };
             }
@@ -109,10 +120,11 @@ export default function JournalEntryForm({
             const newEntry = {
                 id: `JRN-${String(JOURNAL_ENTRIES.length + 1).padStart(3, '0')}`,
                 ...data,
+                lines: enrichedLines,
                 description: data.narrative,
                 isPosted: false // Default status
             };
-            JOURNAL_ENTRIES.push(newEntry);
+            JOURNAL_ENTRIES.push(newEntry as any);
             console.log("Created Journal Entry:", data);
             router.push("/journal-entries");
         }
@@ -311,8 +323,8 @@ export default function JournalEntryForm({
                         </div>
                         <div
                             className={`col-span-2 md:col-span-2 flex items-center justify-center p-2 rounded ${Math.abs(difference) < 0.01
-                                    ? "bg-green-100 text-green-800"
-                                    : "bg-red-100 text-red-800"
+                                ? "bg-green-100 text-green-800"
+                                : "bg-red-100 text-red-800"
                                 }`}
                         >
                             {Math.abs(difference) < 0.01 ? (

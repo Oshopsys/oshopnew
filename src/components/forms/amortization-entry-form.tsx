@@ -39,7 +39,7 @@ interface AmortizationEntryFormProps {
     initialData?: any;
     mode?: "create" | "edit";
     entryId?: string;
-    assets: { id: string; name: string; code: string }[];
+    assets?: { id: string; name: string; code: string }[];
 }
 
 export default function AmortizationEntryForm({

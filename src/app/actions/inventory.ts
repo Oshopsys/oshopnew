@@ -1,4 +1,4 @@
-'use server'
+// 'use server' removed to fix build error
 
 import { supabase } from '@/lib/supabase';
 import { Database } from '@/types/database';

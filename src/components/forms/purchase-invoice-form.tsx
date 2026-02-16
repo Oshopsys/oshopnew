@@ -45,16 +45,16 @@ interface PurchaseInvoiceFormProps {
     initialData?: any;
     mode?: "create" | "edit";
     invoiceId?: string;
-    suppliers: { id: string; name: string }[];
-    items: { id: string; name: string; code?: string }[];
+    suppliers?: { id: string; name: string }[];
+    items?: { id: string; name: string; code?: string }[];
 }
 
 export default function PurchaseInvoiceForm({
     initialData,
     mode = "create",
     invoiceId,
-    suppliers,
-    items
+    suppliers = [],
+    items = []
 }: PurchaseInvoiceFormProps) {
     const router = useRouter();
     // const { toast } = useToast();

@@ -84,8 +84,8 @@ export default function InventoryItemForm({
                     ...INVENTORY_ITEMS[index],
                     ...data,
                     unit: data.unitName,
-                    cost: data.purchasePrice,
-                    price: data.salePrice
+                    cost: data.purchasePrice || 0,
+                    price: data.salePrice || 0
                 };
             }
             console.log("Updated Inventory Item:", data);
@@ -96,8 +96,8 @@ export default function InventoryItemForm({
                 id: String(INVENTORY_ITEMS.length + 1),
                 ...data,
                 unit: data.unitName,
-                cost: data.purchasePrice,
-                price: data.salePrice,
+                cost: data.purchasePrice || 0,
+                price: data.salePrice || 0,
                 quantity: 0 // Default quantity for new items
             };
             INVENTORY_ITEMS.push(newItem);
