@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import SupplierForm from "@/components/forms/supplier-form";
-import { getPartnerById } from "@/app/actions/partners";
+import { getPartner } from "@/app/actions/partners";
 
 export default async function EditSupplierPage({
     params,
@@ -8,7 +8,7 @@ export default async function EditSupplierPage({
     params: Promise<{ id: string }>;
 }) {
     const { id } = await params;
-    const supplier = await getPartnerById(id);
+    const supplier = await getPartner(id);
 
     if (!supplier) {
         notFound();
