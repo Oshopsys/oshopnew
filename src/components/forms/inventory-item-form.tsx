@@ -21,6 +21,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Combobox } from "@/components/ui/combobox";
 import { ACCOUNTS, INVENTORY_ITEMS } from "@/lib/mock-data";
+import { createInventoryItem, updateInventoryItem } from "@/app/actions/inventory-actions";
 
 const inventoryItemSchema = z.object({
     code: z.string().min(1, "Item Code is required"),
@@ -75,34 +76,37 @@ export default function InventoryItemForm({
         defaultValues,
     });
 
-    function onSubmit(data: InventoryItemFormValues) {
-        if (mode === "edit" && itemId) {
-            // TODO: Replace with API call
-            const index = INVENTORY_ITEMS.findIndex((i: any) => i.id === itemId);
-            if (index > -1) {
-                INVENTORY_ITEMS[index] = {
-                    ...INVENTORY_ITEMS[index],
+    async function onSubmit(data: InventoryItemFormValues) {
+        try {
+            if (mode === "edit" && itemId) {
+                await updateInventoryItem(itemId, {
                     ...data,
-                    unit: data.unitName,
-                    cost: data.purchasePrice || 0,
-                    price: data.salePrice || 0
-                };
+                    // unit: data.unitName, // Column does not exist
+                    cost_price: data.purchasePrice || 0,
+                    sales_price: data.salePrice || 0
+                });
+                console.log("Updated Inventory Item:", data);
+                router.push(`/inventory-items/${itemId}`);
+                router.refresh();
+            } else {
+                await createInventoryItem({
+                    code: data.code,
+                    name: data.name,
+                    // unit: data.unitName, // Column does not exist
+                    cost_price: data.purchasePrice || 0,
+                    sales_price: data.salePrice || 0,
+                    description: data.description,
+                    // incomeAccountId: data.incomeAccountId, // Column does not exist
+                    // expenseAccountId: data.expenseAccountId, // Column does not exist
+                    quantity_on_hand: 0 // Default quantity
+                });
+                console.log("Created Inventory Item:", data);
+                router.push("/inventory-items");
+                router.refresh();
             }
-            console.log("Updated Inventory Item:", data);
-            router.push(`/inventory-items/${itemId}`);
-        } else {
-            // TODO: Replace with API call
-            const newItem = {
-                id: String(INVENTORY_ITEMS.length + 1),
-                ...data,
-                unit: data.unitName,
-                cost: data.purchasePrice || 0,
-                price: data.salePrice || 0,
-                quantity: 0 // Default quantity for new items
-            };
-            INVENTORY_ITEMS.push(newItem);
-            console.log("Created Inventory Item:", data);
-            router.push("/inventory-items");
+        } catch (error) {
+            console.error("Error saving inventory item:", error);
+            // You might want to show a toast error here
         }
     }
 

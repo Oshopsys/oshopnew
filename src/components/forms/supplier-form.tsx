@@ -25,6 +25,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { SUPPLIERS } from "@/lib/mock-data";
+import { createPartner, updatePartner } from "@/app/actions/partners";
 
 const supplierSchema = z.object({
     name: z.string().min(1, "Name is required"),
@@ -76,24 +77,28 @@ export default function SupplierForm({
         defaultValues,
     });
 
-    function onSubmit(data: SupplierFormValues) {
-        if (mode === "edit" && supplierId) {
-            // TODO: Replace with API call
-            const index = SUPPLIERS.findIndex((s: any) => s.id === supplierId);
-            if (index > -1) {
-                SUPPLIERS[index] = { ...SUPPLIERS[index], ...data };
+    async function onSubmit(data: SupplierFormValues) {
+        try {
+            if (mode === "edit" && supplierId) {
+                await updatePartner(supplierId, {
+                    ...data,
+                    type: 'SUPPLIER'
+                });
+                console.log("Updated Supplier:", data);
+                router.push(`/suppliers/${supplierId}`);
+                router.refresh();
+            } else {
+                await createPartner({
+                    ...data,
+                    type: 'SUPPLIER'
+                });
+                console.log("Created Supplier:", data);
+                router.push("/suppliers");
+                router.refresh();
             }
-            console.log("Updated Supplier:", data);
-            router.push(`/suppliers/${supplierId}`);
-        } else {
-            // TODO: Replace with API call
-            const newSupplier = {
-                id: String(SUPPLIERS.length + 1),
-                ...data,
-            };
-            SUPPLIERS.push(newSupplier);
-            console.log("Created Supplier:", data);
-            router.push("/suppliers");
+        } catch (error) {
+            console.error("Error saving supplier:", error);
+            // You might want to show a toast error here
         }
     }
 

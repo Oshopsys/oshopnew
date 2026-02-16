@@ -19,7 +19,8 @@ import {
 } from "@/components/ui/form";
 import { Card, CardContent } from "@/components/ui/card";
 import { Combobox } from "@/components/ui/combobox";
-import { JOURNAL_ENTRIES, ACCOUNTS } from "@/lib/mock-data";
+import { ACCOUNTS } from "@/lib/mock-data";
+import { createJournalEntry } from "@/app/journal-entries/actions";
 
 const journalSchema = z.object({
     date: z.string(),
@@ -41,12 +42,14 @@ interface JournalEntryFormProps {
     initialData?: any;
     mode?: "create" | "edit";
     entryId?: string;
+    accounts?: any[];
 }
 
 export default function JournalEntryForm({
     initialData,
     mode = "create",
     entryId,
+    accounts = [], // Default to empty array
 }: JournalEntryFormProps) {
     const router = useRouter();
 
@@ -86,14 +89,14 @@ export default function JournalEntryForm({
     const totalCredit = lines.reduce((sum, line) => sum + (line.credit || 0), 0);
     const difference = totalDebit - totalCredit;
 
-    function onSubmit(data: JournalFormValues) {
+    async function onSubmit(data: JournalFormValues) {
         if (Math.abs(difference) > 0.01) {
             alert("لا يمكن الحفظ: القيد غير متزن.");
             return;
         }
 
         const enrichedLines = data.lines.map(line => {
-            const account = ACCOUNTS.find((a: any) => a.id === line.accountId);
+            const account = accounts.find((a: any) => a.id === line.accountId);
             return {
                 ...line,
                 accountCode: account?.code || "",
@@ -103,30 +106,19 @@ export default function JournalEntryForm({
         });
 
         if (mode === "edit" && entryId) {
-            // TODO: Replace with API call
-            const index = JOURNAL_ENTRIES.findIndex((e: any) => e.id === entryId);
-            if (index > -1) {
-                JOURNAL_ENTRIES[index] = {
-                    ...JOURNAL_ENTRIES[index],
-                    ...data,
-                    lines: enrichedLines,
-                    description: data.narrative // Map back narrative to description
-                };
-            }
-            console.log("Updated Journal Entry:", data);
+            // TODO: Implement updateJournalEntry
+            console.log("Update not implemented yet");
             router.push(`/journal-entries/${entryId}`);
         } else {
-            // TODO: Replace with API call
-            const newEntry = {
-                id: `JRN-${String(JOURNAL_ENTRIES.length + 1).padStart(3, '0')}`,
-                ...data,
-                lines: enrichedLines,
-                description: data.narrative,
-                isPosted: false // Default status
-            };
-            JOURNAL_ENTRIES.push(newEntry as any);
-            console.log("Created Journal Entry:", data);
-            router.push("/journal-entries");
+            try {
+                await createJournalEntry(data);
+                console.log("Created Journal Entry:", data);
+                router.push("/journal-entries");
+                router.refresh();
+            } catch (error) {
+                console.error("Error creating journal entry:", error);
+                alert("Failed to create journal entry. Please try again.");
+            }
         }
     }
 
@@ -138,7 +130,7 @@ export default function JournalEntryForm({
         }
     }
 
-    const accountOptions = ACCOUNTS.map(a => ({
+    const accountOptions = accounts.map(a => ({
         value: a.id,
         label: `${a.code} - ${a.name}`
     }));

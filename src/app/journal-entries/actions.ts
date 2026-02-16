@@ -24,8 +24,45 @@ export async function getJournalEntries() {
 }
 
 export async function createJournalEntry(entry: any) {
-    // This will be implemented in the next step
-    // Requires transaction logic
+    // 1. Create Journal Entry Header
+    const { data: newEntry, error: entryError } = await supabase
+        .from('journal_entries')
+        .insert({
+            transaction_date: entry.date,
+            reference: entry.reference,
+            description: entry.narrative,
+            status: 'POSTED' // Auto-post for now as per legacy behavior, or make it DRAFT
+        })
+        .select()
+        .single();
+
+    if (entryError) {
+        console.error('Error creating journal entry header:', entryError);
+        throw new Error('Failed to create journal entry header: ' + entryError.message);
+    }
+
+    // 2. Create Journal Entry Lines
+    const lines = entry.lines.map((line: any) => ({
+        entry_id: newEntry.id,
+        account_id: line.accountId,
+        description: line.description,
+        debit: line.debit,
+        credit: line.credit
+    }));
+
+    const { error: linesError } = await supabase
+        .from('journal_entry_lines')
+        .insert(lines);
+
+    if (linesError) {
+        console.error('Error creating journal entry lines:', linesError);
+        // Ideally we should rollback the header creation here, but Supabase client doesn't support transactions easily without RPC.
+        // For now, we'll throw error.
+        throw new Error('Failed to create journal entry lines: ' + linesError.message);
+    }
+
+    revalidatePath('/journal-entries');
+    return newEntry;
 }
 
 export async function deleteJournalEntry(id: string) {

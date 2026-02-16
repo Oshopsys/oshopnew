@@ -3,6 +3,8 @@
 import { supabase } from '@/lib/supabase';
 import { Database } from '@/types/database';
 
+import { revalidatePath } from 'next/cache';
+
 export type Partner = Database['public']['Tables']['partners']['Row'];
 export type PartnerInsert = Database['public']['Tables']['partners']['Insert'];
 export type PartnerUpdate = Database['public']['Tables']['partners']['Update'];
@@ -58,7 +60,7 @@ export async function createPartner(partner: any) {
     const payload = {
         name: partner.name,
         code: partner.code,
-        type: 'CUSTOMER', // Default for this form
+        type: partner.type || 'CUSTOMER', // Default to CUSTOMER if not provided
         email: partner.email || null,
         address: partner.billingAddress, // Use billing address as main address
         tax_number: partner.taxIdentificationNumber || null,
@@ -77,6 +79,9 @@ export async function createPartner(partner: any) {
         console.error('Error creating partner:', error);
         throw new Error('Failed to create partner');
     }
+
+    revalidatePath('/suppliers');
+    revalidatePath('/customers');
     return data;
 }
 
